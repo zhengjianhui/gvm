@@ -18,6 +18,6 @@ class 文件都遵循着 jvm 规范
     - 字段和方法信息
 
 除了字面量其他常量是通过索引直接或间接指向 CONSTANT_Utf8_info 常量
-![ba5fc0f4d9638e483888b75d2a6dd3b6.png](evernotecid://8ADFB5C7-1D62-4825-A455-8EA82BD240CF/appyinxiangcom/13940857/ENResource/p2250)
+
 
 # 属性表
