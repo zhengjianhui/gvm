@@ -1,5 +1,7 @@
 package rtda
 
+import "gvm/main/rtda/heap"
+
 // stack frame 栈的节点
 type Frame struct {
 	// stack is implemented as linked list 下一个节点
@@ -12,14 +14,17 @@ type Frame struct {
 	// the next instruction after the call
 	nextPC int
 
+	method *heap.Method
+
 	// todo
 }
 
-func newFrame(thread *Thread, maxLocals, maxStack uint) *Frame {
+func newFrame(thread *Thread, method *heap.Method) *Frame {
 	return &Frame{
 		thread:       thread,
-		localVars:    newLocalVars(maxLocals),
-		operandStack: newOperandStack(maxStack),
+		method:       method,
+		localVars:    newLocalVars(method.MaxLocals()),
+		operandStack: newOperandStack(method.MaxStack()),
 	}
 }
 
@@ -32,6 +37,9 @@ func (self *Frame) OperandStack() *OperandStack {
 }
 func (self *Frame) Thread() *Thread {
 	return self.thread
+}
+func (self *Frame) Method() *heap.Method {
+	return self.method
 }
 func (self *Frame) NextPC() int {
 	return self.nextPC

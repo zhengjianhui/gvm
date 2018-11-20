@@ -1,5 +1,7 @@
 package rtda
 
+import "gvm/main/rtda/heap"
+
 /*
  	局部变量表的数据结构
 	局部变量表是按索引访问的, 所以很自然可以把他想象为一个数组,
@@ -9,5 +11,5 @@ type Slot struct {
 	// 保存 32 位整数
 	num int32
 	// 保存一个引用
-	ref *Object
+	ref *heap.Object
 }
