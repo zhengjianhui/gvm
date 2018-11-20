@@ -1,6 +1,5 @@
 package rtda
 
-
 import "math"
 
 type OperandStack struct {
@@ -64,9 +63,20 @@ func (self *OperandStack) PushRef(ref *Object) {
 	self.slots[self.size].ref = ref
 	self.size++
 }
+
 func (self *OperandStack) PopRef() *Object {
 	self.size--
 	ref := self.slots[self.size].ref
 	self.slots[self.size].ref = nil
 	return ref
+}
+
+func (self *OperandStack) PushSlot(slot Slot) {
+	self.slots[self.size] = slot
+	self.size++
+}
+
+func (self *OperandStack) PopSlot() Slot {
+	self.size--
+	return self.slots[self.size]
 }

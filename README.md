@@ -27,3 +27,27 @@ use go write jvm from book of jvm
     如果当前方法是 java 方法则 pc 寄存器中存放当前正在执行的 java 虚拟机指令的地址
     否则当前方法是本地方法, pc 寄存器中的值没有明确定义
 
+# 指令集和解释器
+每一个类或者接口都会被 java 编译器编译成一个 class 文件, 类或接口的方法信息就放在 class 文件的 method_info 结构中.
+如果方法不是抽象的, 也不是本地方法, 方法的 java 代码就会被编译器编译成字节码
+(即使方法是空的, 编译器也会生成一条 return 语句) 存放在 method_info 结构的 Code属性中
+
+字节码中存放编码后的 java 虚拟机指令. 每条指令都以一个单自己的操作码(opcode) 开头, 由一字节表示
+java 虚拟机最多只能支持 256(2 ^ 8)条指令
+如果指令想象成函数的话, 操作数就是它的参数, 为了让字节码更加紧凑
+很多操作码本身就隐含了操作数
+比如把常数 0 推入操作数栈的指令是 iconst_0
+
+java 虚拟机规范把已经定义的 205 条指令按用途分成了 11 类
+分别是
+- 常量(constant)
+- 加载(loads)
+- 存储(store)
+- 操作数栈(stack)
+- 数学(math)
+- 转换(conversions)
+- 比较(comparisons)
+- 控制(control)
+- 引用(references)
+- 扩展(extended)
+- 保留(reserved)
