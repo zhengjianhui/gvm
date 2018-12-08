@@ -40,12 +40,20 @@ func (self *Thread) PopFrame() *Frame {
 }
 
 /*
-	放回当前帧
+	返回当前帧
  */
 func (self *Thread) CurrentFrame() *Frame {
 	return self.stack.top()
 }
 
+func (self *Thread) TopFrame() *Frame {
+	return self.stack.top()
+}
+
 func (self *Thread) NewFrame(method *heap.Method) *Frame {
 	return newFrame(self, method)
+}
+
+func (self *Thread) IsStackEmpty() bool {
+	return self.stack.isEmpty()
 }

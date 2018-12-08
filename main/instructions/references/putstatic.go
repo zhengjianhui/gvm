@@ -16,7 +16,14 @@ func (self *PUT_STATIC) Execute(frame *rtda.Frame) {
 	fieldRef := cp.GetConstant(self.Index).(*heap.FieldRef)
 	field := fieldRef.ResolvedField()
 	class := field.Class()
-	// todo: init class
+	// 如果类没有初始化则先初始化类
+	// 由于指令已经执行过了, pc 会指向下一条指令
+	// 所以这边重新设置帧的 pc (用线程的 pc 重置帧的pc)
+	if !class.InitStarted() {
+		frame.RevertNextPC()
+		base.InitClass(frame.Thread(), class)
+		return
+	}
 
 	if !field.IsStatic() {
 		panic("java.lang.IncompatibleClassChangeError")

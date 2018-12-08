@@ -51,3 +51,34 @@ java 虚拟机规范把已经定义的 205 条指令按用途分成了 11 类
 - 引用(references)
 - 扩展(extended)
 - 保留(reserved)
+
+
+# 类和对象
+todo
+
+# 方法调用和返回
+## 方法的分类
+* 静态方法
+* 实例方法
+
+静态方法在编译时就绑定了
+动态方法可能要推迟到运行期才能知道
+
+java 7 之前虚拟机规范一共提供了 4 条方法调用指令
+
+* invokestatic
+    用于调用静态方法
+* invokespecial
+	用来调用无需动态绑定的实例方法(构造函数, 私有方法)
+* super
+	调用超类(父类)方法
+* 动态绑定
+	* invokeinterface
+		接口类型的引用调用方法
+	* invokevirtual
+		剩余情况
+
+invokedynamic 是 java7 新增的一条指令, 用于更好的支持动态语言, 详情查看 vm 规范
+
+
+

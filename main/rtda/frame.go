@@ -2,7 +2,11 @@ package rtda
 
 import "gvm/main/rtda/heap"
 
-// stack frame 栈的节点
+/*
+	stack frame 栈的节点
+ 	每一个方法从调用开始到执行完成的过程，就对应着一个栈帧在虚拟机栈里面从入栈到出栈的过程。
+	也就是栈帧
+*/
 type Frame struct {
 	// stack is implemented as linked list 下一个节点
 	lower *Frame
@@ -46,4 +50,8 @@ func (self *Frame) NextPC() int {
 }
 func (self *Frame) SetNextPC(nextPC int) {
 	self.nextPC = nextPC
+}
+
+func (self *Frame) RevertNextPC() {
+	self.nextPC = self.thread.pc
 }
