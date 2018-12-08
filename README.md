@@ -80,5 +80,18 @@ java 7 之前虚拟机规范一共提供了 4 条方法调用指令
 
 invokedynamic 是 java7 新增的一条指令, 用于更好的支持动态语言, 详情查看 vm 规范
 
+方法方回执的指令
+* return 用于没有返回值的情况
+* areturn	返回引用
+* ireturn  返回 int
+* lreturn 返回 long
+* freturn	返回 float
+* dreturn 返回 double
+
+A 方法调用 B 方法, B 方法结束后从栈帧的操作数栈取数返回值推入 A 方法帧的操作数栈顶
+
+6条返回指令和4条调用指令加上字节码解析栈帧之间传递变量, 实现了 java 的方法调用
+
+
 
 
