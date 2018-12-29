@@ -1,4 +1,4 @@
-package arr
+package str
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 	"testing"
 )
 
-func TestArr(t *testing.T) {
+func TestStr(t *testing.T) {
 
 	cp := classpath.Parse("", "/Users/zhengjianhui/go/src/gvm/java")
 	classLoader := heap.NewClassLoader(cp, false)
 
-	className := strings.Replace("BubbleSortTest", ".", "/", -1)
+	className := strings.Replace("StrTest", ".", "/", -1)
 	mainClass := classLoader.LoadClass(className)
 	mainMethod := mainClass.GetMainMethod()
 	if mainMethod != nil {
