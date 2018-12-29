@@ -21,6 +21,13 @@ func main() {
 }
 
 func startJVM(cmd *Cmd) {
+	println(cmd.XjreOption)
+	println("        ")
+	println(cmd.cpOption)
+	println("        ")
+	println(cmd.class)
+	println("        ")
+
 	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
 	classLoader := heap.NewClassLoader(cp, cmd.verboseClassFlag)
 

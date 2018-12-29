@@ -1,4 +1,4 @@
-package heap
+package references
 
 import (
 	"gvm/main/instructions/base"

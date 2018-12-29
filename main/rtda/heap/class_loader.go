@@ -37,7 +37,31 @@ func (self *ClassLoader) LoadClass(name string) *Class {
 		return class
 	}
 
+	// 加载数组逻辑, 如果是数组则返回一个 数组的 class
+	if name[0] == '[' {
+		return self.loadArrayClass(name)
+	}
+
 	return self.loadNonArrayClass(name)
+}
+
+func (self *ClassLoader) loadArrayClass(name string) *Class {
+	class := &Class{
+		accessFlags: ACC_PUBLIC,
+		name:        name,
+		loader:      self,
+		// 不需要初始化, 直接设置为 true
+		initStarted: true,
+		// 父类为 Object
+		superClass:  self.LoadClass("java/lang/Object"),
+		// 实现复制和序列化
+		interfaces: []*Class{
+			self.LoadClass("java/lang/Cloneable"),
+			self.LoadClass("java/io/Serializable"),
+		},
+	}
+	self.classMap[name] = class
+	return class
 }
 
 func (self *ClassLoader) loadNonArrayClass(name string) *Class {

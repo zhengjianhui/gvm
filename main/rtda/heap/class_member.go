@@ -46,6 +46,10 @@ func (self *ClassMember) Class() *Class {
 	return self.class
 }
 
+func (self *Class) Loader() *ClassLoader {
+	return self.loader
+}
+
 // jvms 5.4.4
 func (self *ClassMember) isAccessibleTo(d *Class) bool {
 	if self.IsPublic() {
