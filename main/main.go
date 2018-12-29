@@ -4,39 +4,34 @@ import (
 	"fmt"
 	"gvm/main/classpath"
 	"gvm/main/rtda/heap"
+	"gvm/main/cmd"
+	"gvm/main/interpreter"
 	"strings"
 )
 
 
 func main() {
-	cmd := parseCmd()
+	op := cmd.ParseCmd()
 
-	if cmd.versionFlag {
+	if op.VersionFlag()  {
 		fmt.Println("version 0.0.1")
-	} else if cmd.helpFlag || cmd.class == "" {
-		printUsage()
+	} else if op.HelpFlag() || op.Class() == "" {
+		cmd.PrintUsage()
 	} else {
-		startJVM(cmd)
+		startJVM(op)
 	}
 }
 
-func startJVM(cmd *Cmd) {
-	println(cmd.XjreOption)
-	println("        ")
-	println(cmd.cpOption)
-	println("        ")
-	println(cmd.class)
-	println("        ")
+func startJVM(op *cmd.Cmd) {
+	cp := classpath.Parse(op.XjreOption(), op.CpOption())
+	classLoader := heap.NewClassLoader(cp, op.VerboseClassFlag())
 
-	cp := classpath.Parse(cmd.XjreOption, cmd.cpOption)
-	classLoader := heap.NewClassLoader(cp, cmd.verboseClassFlag)
-
-	className := strings.Replace(cmd.class, ".", "/", -1)
+	className := strings.Replace(op.Class(), ".", "/", -1)
 	mainClass := classLoader.LoadClass(className)
 	mainMethod := mainClass.GetMainMethod()
 	if mainMethod != nil {
-		interpret(mainMethod, cmd.verboseInstFlag)
+		interpreter.Interpret(mainMethod, op.VerboseInstFlag())
 	} else {
-		fmt.Printf("Main method not found in class %s\n", cmd.class)
+		fmt.Printf("Main method not found in class %s\n", op.Class())
 	}
 }

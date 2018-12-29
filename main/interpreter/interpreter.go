@@ -1,4 +1,4 @@
-package main
+package interpreter
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 /*
 	main -cp "/Users/zhengjianhui/Desktop" GaussTest -Xjre "/Library/Java/JavaVirtualMachines/jdk1.8.0_91.jdk/Contents/Home/jre"
  */
-func interpret(method *heap.Method, logInst bool) {
+func Interpret(method *heap.Method, logInst bool) {
 	thread := rtda.NewThread()
 	frame := thread.NewFrame(method)
 	thread.PushFrame(frame)
