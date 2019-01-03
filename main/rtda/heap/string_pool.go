@@ -38,3 +38,18 @@ func utf16ToString(s []uint16) string {
 	runes := utf16.Decode(s) // func Decode(s []uint16) []rune
 	return string(runes)
 }
+
+// todo
+/*
+	如果字符串还没有入池, 把它放入并返回该字符串
+	否则找到已入池字符串返回
+ */
+func InternString(jStr *Object) *Object {
+	goStr := GoString(jStr)
+	if internedStr, ok := internedStrings[goStr]; ok {
+		return internedStr
+	}
+
+	internedStrings[goStr] = jStr
+	return jStr
+}
