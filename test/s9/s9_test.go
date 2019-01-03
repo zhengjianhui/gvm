@@ -74,3 +74,19 @@ func TestClone(t *testing.T) {
 
 }
 
+
+func TestBox(t *testing.T) {
+
+	cp := classpath.Parse("", "/Users/zhengjianhui/go/src/gvm/java")
+	classLoader := heap.NewClassLoader(cp, false)
+
+	className := strings.Replace("BoxTest", ".", "/", -1)
+	mainClass := classLoader.LoadClass(className)
+	mainMethod := mainClass.GetMainMethod()
+	if mainMethod != nil {
+		interpreter.Interpret(mainMethod, false, nil)
+	} else {
+		fmt.Printf("Main method not found in class %s\n", "GaussTest")
+	}
+
+}

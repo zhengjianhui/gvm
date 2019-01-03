@@ -5,6 +5,7 @@ import (
 	"gvm/main/native"
 	"gvm/main/rtda"
 	_ "gvm/main/native/java/lang"
+	_ "gvm/main/native/sun/misc"
 )
 
 // Invoke native method

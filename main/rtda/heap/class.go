@@ -109,6 +109,15 @@ func (self *Class) StartInit() {
 	self.initStarted = true
 }
 
+func (self *Class) GetInstanceMethod(name, descriptor string) *Method {
+	return self.getMethod(name, descriptor, false)
+}
+
+func (self *Class) GetRefVar(fieldName, fieldDescriptor string) *Object {
+	field := self.getField(fieldName, fieldDescriptor, true)
+	return self.staticVars.GetRef(field.slotId)
+}
+
 // jvms 5.4.4
 func (self *Class) isAccessibleTo(other *Class) bool {
 	return self.IsPublic() ||
@@ -175,3 +184,4 @@ func (self *Class) ArrayClass() *Class {
 	arrayClassName := getArrayClassName(self.name)
 	return self.loader.LoadClass(arrayClassName)
 }
+
