@@ -24,6 +24,8 @@ type Class struct {
 	staticVars        Slots
 	// initStarted 字段表示类的 <clinit> 方法是否已经开始执行
 	initStarted       bool
+	// 关联 class 对象(类对象)
+	jClass            *Object
 }
 
 /*
@@ -90,6 +92,17 @@ func (self *Class) StaticVars() Slots {
 }
 func (self *Class) InitStarted() bool {
 	return self.initStarted
+}
+func (self *Class) JClass() *Object {
+	return self.jClass
+}
+func (self *Class) JavaName() string {
+	return strings.Replace(self.name, "/", ".", -1)
+}
+
+func (self *Class) IsPrimitive() bool {
+	_, ok := primitiveTypes[self.name]
+	return ok
 }
 
 func (self *Class) StartInit() {

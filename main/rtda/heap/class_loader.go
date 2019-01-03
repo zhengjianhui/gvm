@@ -24,11 +24,53 @@ type ClassLoader struct {
 }
 
 func NewClassLoader(cp *classpath.Classpath, verboseFlag bool) *ClassLoader {
-	return &ClassLoader{
+	loader := &ClassLoader{
 		cp:       cp,
 		classMap: make(map[string]*Class),
 		verboseFlag: verboseFlag,
 	}
+
+	loader.loadBasicClasses()
+	loader.loadPrimitiveClasses()
+	return loader
+}
+/*
+	先加载 java.lang.Class 类, 这又会触发 java.lang.Object 等类和接口的加载
+	之后遍历 classMap 给已经加载的每一个类关联类对象
+	Class 类的 父类还是 Object
+ */
+func (self *ClassLoader) loadBasicClasses() {
+	jlClassClass := self.LoadClass("java/lang/Class")
+	for _, class := range self.classMap {
+		if class.jClass == nil {
+			class.jClass = jlClassClass.NewObject()
+			class.jClass.extra = class
+		}
+	}
+}
+
+/*
+	加载 void 和基本类型的类
+ */
+func (self *ClassLoader) loadPrimitiveClasses() {
+	for primitiveType, _ := range primitiveTypes {
+		self.loadPrimitiveClass(primitiveType)
+	}
+}
+
+/*
+	加载基本类型 (int, double, void, boolean 等 class)
+ */
+func (self *ClassLoader) loadPrimitiveClass(className string) {
+	class := &Class{
+		accessFlags: ACC_PUBLIC, // todo
+		name:        className,
+		loader:      self,
+		initStarted: true,
+	}
+	class.jClass = self.classMap["java/lang/Class"].NewObject()
+	class.jClass.extra = class
+	self.classMap[className] = class
 }
 
 func (self *ClassLoader) LoadClass(name string) *Class {
@@ -37,12 +79,21 @@ func (self *ClassLoader) LoadClass(name string) *Class {
 		return class
 	}
 
+	var class *Class
 	// 加载数组逻辑, 如果是数组则返回一个 数组的 class
 	if name[0] == '[' {
-		return self.loadArrayClass(name)
+		class = self.loadArrayClass(name)
+	} else {
+		class = self.loadNonArrayClass(name)
 	}
 
-	return self.loadNonArrayClass(name)
+	// 如果 java.lang.Class 已经加载, 则给类关联类对象
+	if jlClassClass, ok := self.classMap["java/lang/Class"]; ok {
+		class.jClass = jlClassClass.NewObject()
+		class.jClass.extra = class
+	}
+
+	return class
 }
 
 func (self *ClassLoader) loadArrayClass(name string) *Class {
