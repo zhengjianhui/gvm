@@ -77,6 +77,16 @@ func readExceptionTable(reader *ClassReader) []*ExceptionTableEntry {
 	return exceptionTable
 }
 
+func (self *CodeAttribute) LineNumberTableAttribute() *LineNumberTableAttribute {
+	for _, attrInfo := range self.attributes {
+		switch attrInfo.(type) {
+		case *LineNumberTableAttribute:
+			return attrInfo.(*LineNumberTableAttribute)
+		}
+	}
+	return nil
+}
+
 func (self *ExceptionTableEntry) StartPc() uint16 {
 	return self.startPc
 }

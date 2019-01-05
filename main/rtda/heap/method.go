@@ -11,6 +11,10 @@ type Method struct {
 	maxLocals    uint
 	code         []byte
 	argSlotCount uint
+	// 记录 exception
+	exceptionTable  ExceptionTable
+	// 行号表
+	lineNumberTable *classfile.LineNumberTableAttribute
 }
 
 func newMethods(class *Class, cfMethods []*classfile.MemberInfo) []*Method {
@@ -39,6 +43,12 @@ func (self *Method) copyAttributes(cfMethod *classfile.MemberInfo) {
 		self.maxStack = codeAttr.MaxStack()
 		self.maxLocals = codeAttr.MaxLocals()
 		self.code = codeAttr.Code()
+
+		// exception 信息
+		self.exceptionTable = newExceptionTable(codeAttr.ExceptionTable(),
+			self.class.constantPool)
+		// copy 行号表
+		self.lineNumberTable = codeAttr.LineNumberTableAttribute()
 	}
 }
 
@@ -104,4 +114,26 @@ func (self *Method) Code() []byte {
 }
 func (self *Method) ArgSlotCount() uint {
 	return self.argSlotCount
+}
+
+/*
+	查找 exception table 找到对应的处理项则返回 pc 否则返回 -1
+ */
+func (self *Method) FindExceptionHandler(exClass *Class, pc int) int {
+	handler := self.exceptionTable.findExceptionHandler(exClass, pc)
+	if handler != nil {
+		return handler.handlerPc
+	}
+	return -1
+}
+
+
+func (self *Method) GetLineNumber(pc int) int {
+	if self.IsNative() {
+		return -2
+	}
+	if self.lineNumberTable == nil {
+		return -1
+	}
+	return self.lineNumberTable.GetLineNumber(pc)
 }

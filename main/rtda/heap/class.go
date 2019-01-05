@@ -26,6 +26,8 @@ type Class struct {
 	initStarted       bool
 	// 关联 class 对象(类对象)
 	jClass            *Object
+	//
+	sourceFile        string
 }
 
 /*
@@ -41,9 +43,16 @@ func newClass(cf *classfile.ClassFile) *Class {
 	class.constantPool = newConstantPool(class, cf.ConstantPool())
 	class.fields = newFields(class, cf.Fields())
 	class.methods = newMethods(class, cf.Methods())
+	class.sourceFile = getSourceFile(cf)
 	return class
 }
 
+func getSourceFile(cf *classfile.ClassFile) string {
+	if sfAttr := cf.SourceFileAttribute(); sfAttr != nil {
+		return sfAttr.FileName()
+	}
+	return "Unknown" // todo
+}
 
 
 func (self *Class) IsPublic() bool {
@@ -93,12 +102,20 @@ func (self *Class) StaticVars() Slots {
 func (self *Class) InitStarted() bool {
 	return self.initStarted
 }
+
 func (self *Class) JClass() *Object {
 	return self.jClass
 }
+
+func (self *Class) SourceFile() string {
+	return self.sourceFile
+}
+
 func (self *Class) JavaName() string {
 	return strings.Replace(self.name, "/", ".", -1)
 }
+
+
 
 func (self *Class) IsPrimitive() bool {
 	_, ok := primitiveTypes[self.name]
